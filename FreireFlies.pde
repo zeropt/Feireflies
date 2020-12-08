@@ -42,6 +42,7 @@ void setup() {
     studentFlies[i] = new Freirefly(SLOT_NUM);
   }
   resetTime();
+  println(hex(color(0, 0, 0)));
 }
 
 void resetTime() {
@@ -123,6 +124,9 @@ void GUI() {
   rect(0, height-100, width/2.0, 100);
   fill(150, 50, 50);
   rect(width/2.0, height-100, width/2.0, 100);
+  fill(255, 50);
+  text("START/RESET", 50, height-40);
+  text("STOP", width-190, height-40);
   
   fill(180);
   ellipse(slider_x, 65, 20, 20);

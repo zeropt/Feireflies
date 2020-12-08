@@ -67,6 +67,6 @@ class Freirefly {
     //B = 2*(B-512.0) + 512.0;
     if (B > 1024.0) B = 1024.0;
     if (B < 0.0) B = 0.0;
-    return color(hue(c), 1024, B);
+    return color(hue(c), saturation(c), B);
   }
 };
