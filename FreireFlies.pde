@@ -2,9 +2,13 @@
 //MERR 1 Core Project
 //by Riley Mann
 
+import processing.serial.*;
+
 //Constants
 int   SLOT_NUM    = 40;
 int   STUDENT_NUM = 5;
+int   TIC_LENGTH  = 50;
+int   BAUD_RATE   = 9600;
 
 float T_BC = 0.5;
 float T_PP = 0.1;
@@ -33,16 +37,22 @@ float class_r  = 160;
 float theta    = TWO_PI/STUDENT_NUM;
 float text_off = 20;
 
+//Serial Stuff
+Serial myPort;  // Create object from Serial class
+boolean connected = false;
+
 void setup() {
   size(600, 600);
   stroke(255);
   textSize(30);
   noStroke();
+  
+  serialConnect();
+  
   for (int i = 0; i < STUDENT_NUM; i++) {
     studentFlies[i] = new Freirefly(SLOT_NUM);
   }
   resetTime();
-  println(hex(color(0, 0, 0)));
 }
 
 void resetTime() {
@@ -55,20 +65,25 @@ long getTime() {
 
 void draw() {
   background(0);
-  fill(teacherFly.getSlot(slot));
-  ellipse(width/2.0, height/2.0, r, r);
-  fill(255);
-  text(0, width/2.0 + text_off, height/2.0 - text_off);
-  for (int i = 0; i < STUDENT_NUM; i++) {
-    fill(studentFlies[i].getSlot(slot));
-    float x = width/2.0 + class_r*cos(theta*i);
-    float y = height/2.0 + class_r*sin(theta*i);
-    ellipse(x, y, r, r);
+  
+  if (connected) {
+    fill(teacherFly.getSlot(slot));
+    ellipse(width/2.0, height/2.0, r, r);
     fill(255);
-    text(i+1, x + text_off, y - text_off);
+    text(0, width/2.0 + text_off, height/2.0 - text_off);
+    for (int i = 0; i < STUDENT_NUM; i++) {
+      fill(studentFlies[i].getSlot(slot));
+      float x = width/2.0 + class_r*cos(theta*i);
+      float y = height/2.0 + class_r*sin(theta*i);
+      ellipse(x, y, r, r);
+      fill(255);
+      text(i+1, x + text_off, y - text_off);
+    }
+    GUI();
+    update();
+  } else {
+   serialConnect(); 
   }
-  GUI();
-  update();
 }
 
 void freireflyInit() {
@@ -88,7 +103,7 @@ void freireflyInit() {
 }
 
 void update() {
-  if (getTime() > 50) {
+  if (getTime() > TIC_LENGTH) {
     slot++;
     if (slot >= SLOT_NUM) {
       slot = 0;
@@ -151,6 +166,25 @@ void GUI() {
         }
       }
       mouse_pressed = false;
+    }
+  }
+}
+
+void serialConnect() {
+  fill(150);
+  text("Select port:", 30, 40);
+  for (int i = 0; i < Serial.list().length; i++) {
+    String port = Serial.list()[i];
+    text(char(i+48) + ": " + port, 50, 50*i + 80);
+  }
+  if (keyPressed) {
+    for (int i = 0; i < Serial.list().length; i++) {
+      if (i+48 == int(key)) {
+        String selected_port = Serial.list()[0];
+        myPort = new Serial(this, selected_port, BAUD_RATE);
+        connected = true;
+        break;
+      }
     }
   }
 }
