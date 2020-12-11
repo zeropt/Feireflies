@@ -127,8 +127,13 @@ void updateColors() {
 }
 
 void updateArduino() {
-  myPort.write(125); //teacherFly.getSlot(slot));
-  println("writing to arduino");
+  int c = teacherFly.getSlot(slot);
+  myPort.write(byte(c>>16));
+  myPort.write(byte(c>>8));
+  myPort.write(byte(c));
+  myPort.write('\n');
+  print("writing to arduino: ");
+  println(hex(teacherFly.getSlot(slot)));
   //for (int i = 0; i < STUDENT_NUM; i++) {
 }
 
@@ -187,7 +192,7 @@ void serialConnect() {
   if (keyPressed) {
     for (int i = 0; i < Serial.list().length; i++) {
       if (i+48 == int(key)) {
-        String selected_port = Serial.list()[0];
+        String selected_port = Serial.list()[i];
         myPort = new Serial(this, selected_port, BAUD_RATE);
         connected = true;
         break;
