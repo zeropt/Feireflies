@@ -8,7 +8,7 @@ import processing.serial.*;
 int   SLOT_NUM    = 40;
 int   STUDENT_NUM = 9;
 int   TIC_LENGTH  = 50;
-int   BAUD_RATE   = 115200;
+int   BAUD_RATE   = 9600;
 
 float T_BC = 0.5;
 float T_PP = 0.1;
@@ -127,19 +127,28 @@ void updateColors() {
 }
 
 void updateArduino() {
+  String m = "";
   int c = teacherFly.getSlot(slot);
-  myPort.write(byte(c>>16));
-  myPort.write(byte(c>>8));
-  myPort.write(byte(c));
+  m += (char)byte(c>>16);
+  m += (char)byte(c>>8);
+  m += (char)byte(c);
   
   for (int i = 0; i < STUDENT_NUM; i++) {
-    c = studentFlies[i].getSlot(slot);
-    myPort.write(byte(c>>16));
-    myPort.write(byte(c>>8));
-    myPort.write(byte(c));
+    int flyslot = slot;
+    if (i < 3) flyslot -= 1;
+    else if (i < 5) flyslot -= 2;
+    else if (i < 7) flyslot -= 3;
+    else flyslot -= 4;
+    
+    if (flyslot < 0) flyslot += SLOT_NUM;
+    c = studentFlies[i].getSlot(flyslot);
+    m += (char)byte(c>>16);
+    m += (char)byte(c>>8);
+    m += (char)byte(c);
   }
-  myPort.write('\n');
-  //for (int i = 0; i < STUDENT_NUM; i++) {
+  m += '\n';
+  myPort.write(m);
+  println("");
 }
 
 void GUI() {
