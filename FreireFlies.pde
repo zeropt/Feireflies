@@ -8,7 +8,7 @@ import processing.serial.*;
 int   SLOT_NUM    = 40;
 int   STUDENT_NUM = 9;
 int   TIC_LENGTH  = 50;
-int   BAUD_RATE   = 9600;
+int   BAUD_RATE   = 115200;
 
 float T_BC = 0.5;
 float T_PP = 0.1;
@@ -131,9 +131,14 @@ void updateArduino() {
   myPort.write(byte(c>>16));
   myPort.write(byte(c>>8));
   myPort.write(byte(c));
+  
+  for (int i = 0; i < STUDENT_NUM; i++) {
+    c = studentFlies[i].getSlot(slot);
+    myPort.write(byte(c>>16));
+    myPort.write(byte(c>>8));
+    myPort.write(byte(c));
+  }
   myPort.write('\n');
-  print("writing to arduino: ");
-  println(hex(teacherFly.getSlot(slot)));
   //for (int i = 0; i < STUDENT_NUM; i++) {
 }
 
