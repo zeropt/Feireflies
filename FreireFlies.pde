@@ -6,7 +6,7 @@ import processing.serial.*;
 
 //Constants
 int   SLOT_NUM    = 40;
-int   STUDENT_NUM = 5;
+int   STUDENT_NUM = 9;
 int   TIC_LENGTH  = 50;
 int   BAUD_RATE   = 9600;
 
@@ -109,6 +109,7 @@ void update() {
       slot = 0;
       updateColors();
     }
+    updateArduino();
     resetTime();
   }
 }
@@ -123,6 +124,12 @@ void updateColors() {
       if (i != j) studentFlies[i].interact(studentFlies[j], studentTau);
     }
   }
+}
+
+void updateArduino() {
+  myPort.write(125); //teacherFly.getSlot(slot));
+  println("writing to arduino");
+  //for (int i = 0; i < STUDENT_NUM; i++) {
 }
 
 void GUI() {

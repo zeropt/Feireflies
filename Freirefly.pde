@@ -4,6 +4,7 @@ class Freirefly {
   
   Freirefly(int slots) {
     data = new int[slots];
+    clearColors();
   }
   
   void addBlink() {
