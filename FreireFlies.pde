@@ -129,6 +129,7 @@ void updateColors() {
 void updateArduino() {
   String m = "";
   int c = teacherFly.getSlot(slot);
+  m += (char)byte(0);
   m += (char)byte(c>>16);
   m += (char)byte(c>>8);
   m += (char)byte(c);
@@ -142,6 +143,7 @@ void updateArduino() {
     
     if (flyslot < 0) flyslot += SLOT_NUM;
     c = studentFlies[i].getSlot(flyslot);
+    m += (char)byte(i+1);
     m += (char)byte(c>>16);
     m += (char)byte(c>>8);
     m += (char)byte(c);

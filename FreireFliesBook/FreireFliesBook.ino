@@ -53,15 +53,12 @@ void updatePixels() {
 }
 
 void setLEDs(String data) {
-  int pixel = 0;
-  
-  for (int i = 0; i < data.length(); i += 3) {
+  for (int i = 0; i < data.length(); i += 4) {
     uint32_t col = 0xFF000000;
-    col |= (byte)serial_input[i] << 16;
-    col |= (byte)serial_input[i+1] << 8;
-    col |= (byte)serial_input[i+2];
-    if (pixel < NUMPIXELS) target_colors[pixel] = col;
-    pixel++;
+    col |= (byte)serial_input[i+1] << 16;
+    col |= (byte)serial_input[i+2] << 8;
+    col |= (byte)serial_input[i+3];
+    target_colors[(byte)serial_input[i]] = col;
   }
 }
 
