@@ -129,10 +129,9 @@ void updateColors() {
 void updateArduino() {
   String m = "";
   int c = teacherFly.getSlot(slot);
-  m += (char)byte(0);
-  m += (char)byte(c>>16);
-  m += (char)byte(c>>8);
-  m += (char)byte(c);
+  m += byteToHex(byte(c>>16));
+  m += byteToHex(byte(c>>8));
+  m += byteToHex(byte(c));
   
   for (int i = 0; i < STUDENT_NUM; i++) {
     int flyslot = slot;
@@ -143,14 +142,14 @@ void updateArduino() {
     
     if (flyslot < 0) flyslot += SLOT_NUM;
     c = studentFlies[i].getSlot(flyslot);
-    m += (char)byte(i+1);
-    m += (char)byte(c>>16);
-    m += (char)byte(c>>8);
-    m += (char)byte(c);
+    m += ',';
+    m += byteToHex(byte(c>>16));
+    m += byteToHex(byte(c>>8));
+    m += byteToHex(byte(c));
   }
-  m += '\n';
+  m += "\r\n";
   myPort.write(m);
-  println("");
+  //println("");
 }
 
 void GUI() {
@@ -215,4 +214,20 @@ void serialConnect() {
       }
     }
   }
+}
+String byteToHex(byte c) {
+  String return_string = "";
+  int digit_1 = floor(c / 16);
+  if (digit_1 > 9) {
+    return_string += char(digit_1+55);
+  } else {
+    return_string += char(digit_1+48);
+  }
+  int digit_2 = c % 16;
+  if (digit_2 > 9) {
+    return_string += char(digit_2+55);
+  } else {
+    return_string += char(digit_2+48);
+  }
+  return return_string;
 }

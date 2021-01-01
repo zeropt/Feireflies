@@ -53,12 +53,26 @@ void updatePixels() {
 }
 
 void setLEDs(String data) {
-  for (int i = 0; i < data.length(); i += 4) {
-    uint32_t col = 0xFF000000;
+  int pixel_i = 0;
+  
+  for (int i = 0; i < data.length(); i++) {
+    /*uint32_t col = 0xFF000000;
     col |= (byte)serial_input[i+1] << 16;
     col |= (byte)serial_input[i+2] << 8;
     col |= (byte)serial_input[i+3];
-    target_colors[(byte)serial_input[i]] = col;
+    target_colors[(byte)serial_input[i]] = col;*/
+    
+    char c = data[i];
+    
+    if (c == ',' || c == '\r') {
+      String r = data.substring(i-6, i-4);
+      String g = data.substring(i-4, i-2);
+      String b = data.substring(i-2, i);
+      if (pixel_i < NUMPIXELS) {
+        target_colors[pixel_i] = freireflies.Color(hexToInt(r), hexToInt(g), hexToInt(b));
+      }
+      pixel_i++;
+    }
   }
 }
 
@@ -66,4 +80,22 @@ void clearPixels() {
   for (int i = 0; i < NUMPIXELS; i++) {
     target_colors[i] = 0xFF000000;
   }
+}
+
+int hexToInt(String hex_data) {
+  int returnVal = 0;
+  for (int i = 0; i < hex_data.length(); i++) {
+    byte b = byte(hex_data[(hex_data.length()-1) - i]);
+    if (b >= 48 && b <= 57) { //0-9
+      returnVal += (b-48)*pow(16,i);
+    } else if (b >= 65 && b <= 70) { //A-F
+      returnVal += (b-55)*pow(16,i);
+    } else if (b >= 97 && b <= 102) { //a-f
+      returnVal += (b-87)*pow(16,i);
+    } else {
+      returnVal = 0; //default to 0
+      break;
+    }
+  }
+  return returnVal;
 }
